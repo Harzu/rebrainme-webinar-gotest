@@ -1,4 +1,4 @@
-.PHONY: build
+.PHONY: build run-test-env migration-up migration-down run-tests stop-env
 
 export APP_NAME := gotest
 export VERSION := $(if $(TAG),$(TAG),$(if $(BRANCH_NAME),$(BRANCH_NAME),$(shell git symbolic-ref -q --short HEAD || git describe --tags --exact-match)))
