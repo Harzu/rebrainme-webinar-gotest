@@ -11,7 +11,7 @@ import (
 
 type Repository interface {
 	InsertOrUpdateClient(ctx context.Context, client entities.Client) error
-	FindClientsByEmails(ctx context.Context, emails []string) ([]entities.Client, error)
+	FindClientByEmail(ctx context.Context, email string) (*entities.Client, error)
 }
 
 type repositoryDB struct {

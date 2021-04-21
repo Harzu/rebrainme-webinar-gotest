@@ -5,11 +5,13 @@ import (
 
 	"github.com/vrischmann/envconfig"
 
+	"rebrainme/gotest/internal/processors/whitelists"
 	"rebrainme/gotest/internal/system/database/psql"
 )
 
 type Config struct {
-	PSQL *psql.Config
+	PSQL       *psql.Config
+	Whitelists *whitelists.Config
 }
 
 func Init() (*Config, error) {

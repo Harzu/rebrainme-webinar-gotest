@@ -30,7 +30,7 @@ func prepareInsertOrUpdateClientQuery(model clientModel) (string, []interface{},
 	return rawRequest.ToSql()
 }
 
-func prepareFindClientsByEmailsQuery(emails []string) (string, []interface{}, error) {
+func prepareFindClientByEmailQuery(email string) (string, []interface{}, error) {
 	psqlSq := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 
 	st, err := stommer.New(clientModel{})
@@ -41,7 +41,7 @@ func prepareFindClientsByEmailsQuery(emails []string) (string, []interface{}, er
 	rawRequest := psqlSq.Select(st.Columns...).
 		From(tableClients).
 		Where(sq.Eq{
-			"email":      emails,
+			"email":      email,
 			"deleted_at": nil,
 		})
 

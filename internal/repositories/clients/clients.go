@@ -20,33 +20,17 @@ func (r *repositoryDB) InsertOrUpdateClient(ctx context.Context, client entities
 	return nil
 }
 
-func (r *repositoryDB) FindClientsByEmails(ctx context.Context, emails []string) (result []entities.Client, err error) {
-	query, args, err := prepareFindClientsByEmailsQuery(emails)
+func (r *repositoryDB) FindClientByEmail(ctx context.Context, email string) (*entities.Client, error) {
+	query, args, err := prepareFindClientByEmailQuery(email)
 	if err != nil {
-		return result, fmt.Errorf("failed to prepare FindClientsByEmails query: %w", err)
+		return nil, fmt.Errorf("failed to prepare FindClientByEmail query: %w", err)
 	}
 
-	rows, err := r.conn.QueryxContext(ctx, query, args...)
-	if err != nil {
-		return result, fmt.Errorf("failed to execute FindClientsByEmails query: %w", err)
-	}
-	defer func() {
-		if closeErr := rows.Close(); closeErr != nil && err == nil {
-			err = closeErr
-		}
-	}()
-
-	for rows.Next() {
-		var model clientModel
-		if err := rows.StructScan(&model); err != nil {
-			return result, fmt.Errorf("failed to scan row to struct")
-		}
-		result = append(result, buildClientEntity(model))
+	var model clientModel
+	if err := r.conn.QueryRowxContext(ctx, query, args...).StructScan(&model); err != nil {
+		return nil, fmt.Errorf("failed to execute FindClientByEmail query: %w", err)
 	}
 
-	if err := rows.Err(); err != nil {
-		return result, fmt.Errorf("unable to scan all out of FindClientsByEmails query: %w", err)
-	}
-
-	return
+	result := buildClientEntity(model)
+	return &result, nil
 }

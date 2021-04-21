@@ -64,27 +64,28 @@ func TestRepositoryDB_FindClientsByEmails(t *testing.T) {
 
 	clients := []entities.Client{
 		{Email: "example_1@example.com", FullName: "John Doe", City: "Moscow"},
-		{Email: "example_2@example.com", FullName: "Alan Walker", City: "NY"},
-		{Email: "example_3@example.com", FullName: "Bob Marley", City: "London"},
+		{Email: "example_2@example.com", FullName: "Bob Marley", City: "London"},
 	}
 	for _, client := range clients {
 		err := repo.InsertOrUpdateClient(ctx, client)
 		req.NoError(err)
 	}
 
-	_, err := psqlClient.Exec(fmt.Sprintf("UPDATE %s SET deleted_at = NOW() WHERE email = $1", tableClients), clients[2].Email)
+	_, err := psqlClient.Exec(fmt.Sprintf("UPDATE %s SET deleted_at = NOW() WHERE email = $1", tableClients), clients[1].Email)
 	req.NoError(err)
 
-	test := func(emails []string, want []entities.Client) func(t *testing.T) {
+	test := func(email string, want *entities.Client, isError bool) func(t *testing.T) {
 		return func(t *testing.T) {
-			actual, err := repo.FindClientsByEmails(ctx, emails)
-			req.NoError(err)
-			req.Len(actual, len(want))
+			actual, err := repo.FindClientByEmail(ctx, email)
+			if isError {
+				req.Error(err)
+			} else {
+				req.NoError(err)
+			}
 			req.Equal(want, actual)
 		}
 	}
 
-	t.Run("get exists clients", test([]string{clients[0].Email, clients[1].Email}, []entities.Client{clients[0], clients[1]}))
-	t.Run("get deleted client", test([]string{clients[2].Email}, []entities.Client(nil)))
-	t.Run("get all clients", test([]string{clients[0].Email, clients[1].Email, clients[2].Email}, []entities.Client{clients[0], clients[1]}))
+	t.Run("get exists client", test(clients[0].Email, &clients[0], false))
+	t.Run("get deleted client", test(clients[1].Email, nil, true))
 }
