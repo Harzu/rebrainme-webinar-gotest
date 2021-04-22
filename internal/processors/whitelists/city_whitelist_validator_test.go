@@ -29,21 +29,30 @@ func TestCityWhitelistValidator_Validate(t *testing.T) {
 	}{
 		"success validate": {
 			setup: func(ctx context.Context, m mocks) {
-				m.clientRepoMocks.EXPECT().FindClientByEmail(ctx, clientEmail).Return(&entities.Client{City: "Moscow"}, nil)
+				m.clientRepoMocks.EXPECT().
+					FindClientByEmail(ctx, clientEmail).
+					Return(&entities.Client{City: "Moscow"}, nil).
+					Times(1)
 			},
 			grantedCities: []string{"Moscow"},
 			err:           nil,
 		},
 		"fail validate with not granted city": {
 			setup: func(ctx context.Context, m mocks) {
-				m.clientRepoMocks.EXPECT().FindClientByEmail(ctx, clientEmail).Return(&entities.Client{City: "NY"}, nil)
+				m.clientRepoMocks.EXPECT().
+					FindClientByEmail(ctx, clientEmail).
+					Return(&entities.Client{City: "NY"}, nil).
+					Times(1)
 			},
 			grantedCities: []string{"Moscow"},
 			err:           errors.New("client city is not granted"),
 		},
 		"fail validate with find client error": {
 			setup: func(ctx context.Context, m mocks) {
-				m.clientRepoMocks.EXPECT().FindClientByEmail(ctx, clientEmail).Return(nil, sql.ErrNoRows)
+				m.clientRepoMocks.EXPECT().
+					FindClientByEmail(ctx, clientEmail).
+					Return(nil, sql.ErrNoRows).
+					Times(1)
 			},
 			grantedCities: []string{"Moscow"},
 			err:           sql.ErrNoRows,
