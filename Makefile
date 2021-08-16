@@ -45,10 +45,6 @@ migration-down: ## Rollback develop migrations
 lint: ## Run golangci-lint
 	golangci-lint run
 
-.PHONU: lint-from-docker
-lint-from-docker: ## Run golang-ci lint from helper container
-	@docker-compose run --rm helper golangci-lint run
-
 .PHONY: test-short
 test-short: ## Run only unit tests
 	@go test -short -cover ./...
@@ -56,6 +52,10 @@ test-short: ## Run only unit tests
 .PHONY: test-long
 test-long: ## Run all tests (unit/integrations)
 	@make run-dev-env && make migration-up && make test-long-up; make stop
+
+.PHONY: test-ci
+test-ci:
+	@make run-dev-env && make migration-up && make test-long-up
 
 .PHONY: tests-long-up
 test-long-up:

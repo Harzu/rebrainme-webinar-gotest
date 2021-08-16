@@ -42,5 +42,11 @@ jobs:
     - name: run tests
       env:
         VERSION: $GITHUB_SHA
-      run: make test-long
+      run: make test-ci
+
+    - name: cleanup
+      if: always()
+      env:
+        VERSION: $GITHUB_SHA
+      run: make stop
         
