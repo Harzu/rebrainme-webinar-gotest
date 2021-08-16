@@ -2,8 +2,8 @@ SHELL := bash
 .ONESHELL:
 MAKEFLAGS += --no-builtin-rules
 
-export APP_NAME := $(if $(APP_NAME),$(APP_NAME),"gotest")
-export DOCKER_REPOSITORY := $(if $(DOCKER_REPOSITORY),$(DOCKER_REPOSITORY),"rebrainme-webinars")
+export APP_NAME := $(if $(APP_NAME),$(APP_NAME),gotest)
+export DOCKER_REPOSITORY := $(if $(DOCKER_REPOSITORY),$(DOCKER_REPOSITORY),rebrainme-webinars)
 export VERSION := $(if $(VERSION),$(VERSION),$(if $(COMMIT_SHA),$(COMMIT_SHA),$(shell git rev-parse --verify HEAD)))
 export DOCKER_BUILDKIT := 1
 
