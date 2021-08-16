@@ -27,7 +27,7 @@ jobs:
         fetch-depth: '0'
 
     - name: build helper
-      uses: .github/actions/helper
+      uses: ./.github/actions/helper
       with:
         docker_repository: $DOCKER_REPOSITORY
         app_name: $APP_NAME
