@@ -1,0 +1,16 @@
+inputs:
+  name: 
+    docker_repository:
+      required: true
+    app_name:
+      required: true
+    version:
+      default: master
+    token:
+      required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: build helper image
+      run: docker build --no-cache --pull -f ./build/helper.ci.Dockerfile -t ${{ inputs.docker_repository }}/${{ inputs.app_name }}-helper:${{ inputs.version }} --build-arg CI_JOB_TOKEN=${{ inputs.token }} .

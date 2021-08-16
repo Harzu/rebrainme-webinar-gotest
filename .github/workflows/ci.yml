@@ -1,0 +1,27 @@
+name: ci
+
+on:
+  workflow_dispatch:
+  push:
+
+env:
+  DOCKER_REPOSITORY: harzu
+  APP_NAME: gotest
+
+jobs:
+  prebuild:
+    runs-on: "ubuntu-latest"
+    steps:
+    - name: checkout code from master
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: '0'
+
+    - name: lint
+      uses: ./.github/workflows/helper
+      with:
+        docker_repository: $DOCKER_REPOSITORY
+        app_name: $APP_NAME
+        version: $GITHUB_SHA
+        token: ${{ secrets.TOKEN }}
+        
