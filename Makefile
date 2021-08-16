@@ -54,7 +54,7 @@ test-short: ## Run only unit tests
 	@go test -short -cover ./...
 
 .PHONY: test-long
-test-long: run-dev-env ## Run all tests (unit/integrations)
+test-long: ## Run all tests (unit/integrations)
 	@make run-dev-env && make migration-up && make test-long-up; make stop
 
 .PHONY: tests-long-up
