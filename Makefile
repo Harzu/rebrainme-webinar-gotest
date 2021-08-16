@@ -2,9 +2,9 @@ SHELL := bash
 .ONESHELL:
 MAKEFLAGS += --no-builtin-rules
 
-export APP_NAME := gotest
-export VERSION := $(if $(TAG),$(TAG),$(if $(BRANCH_NAME),$(BRANCH_NAME),$(shell git symbolic-ref -q --short HEAD || git describe --tags --exact-match)))
-export DOCKER_REPOSITORY := rebrainme-webinars
+export APP_NAME := $(if $(APP_NAME),$(APP_NAME),"gotest")
+export DOCKER_REPOSITORY := $(if $(DOCKER_REPOSITORY),$(DOCKER_REPOSITORY),"rebrainme-webinars")
+export VERSION := $(if $(VERSION),$(VERSION),$(if $(COMMIT_SHA),$(COMMIT_SHA),$(shell git rev-parse --verify HEAD)))
 export DOCKER_BUILDKIT := 1
 
 MIGRATE_DSN := "postgres://gotest:gotest@postgres:5432/gotest?sslmode=disable"
@@ -24,12 +24,9 @@ init: ## Init project
 generate: ## Golang codegen
 	@go generate ./...
 
-.PHONY: lint
-lint: ## Run golangci-lint
-	golangci-lint run
-
 .PHONY: build
 build: ## Build docker containers
+	@echo ${APP_NAME}
 	@docker build ${NOCACHE} --pull -f ./build/helper.Dockerfile -t ${DOCKER_REPOSITORY}/${APP_NAME}-helper:${VERSION} --ssh default .
 
 .PHONY: run-dev-env
