@@ -28,5 +28,5 @@ jobs:
     - name: run golangci-lint
       env:
         VERSION: $GITHUB_SHA
-      run: make lint
+      run: make lint-from-docker
         

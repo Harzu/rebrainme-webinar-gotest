@@ -44,6 +44,14 @@ migration-up: ## Run develop migrations
 migration-down: ## Rollback develop migrations
 	@docker-compose run --rm helper migrate -verbose -path ./migrations -database ${MIGRATE_DSN} down
 
+.PHONY: lint
+lint: ## Run golangci-lint
+	golangci-lint run
+
+.PHONU: lint-from-docker
+lint-from-docker: ## Run golang-ci lint from helper container
+	@docker-compose run --rm helper golangci-lint run
+
 .PHONY: test-short
 test-short: ## Run only unit tests
 	@go test -short -cover ./...
