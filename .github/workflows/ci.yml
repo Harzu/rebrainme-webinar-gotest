@@ -5,8 +5,7 @@ on:
   push:
 
 env:
-  DOCKER_REPOSITORY: Harzu
-  APP_NAME: gotest
+  HELPER_TAG: harzu/gotest-helper:$GITHUB_SHA
 
 jobs:
   prebuild:
@@ -18,7 +17,7 @@ jobs:
           fetch-depth: '0'
 
       - name: build helper image
-        run: docker build --no-cache --pull -f ./build/helper.ci.Dockerfile -t $DOCKER_REPOSITORY/$APP_NAME-helper:$GITHUB_SHA --build-arg CI_JOB_TOKEN=${{ secrets.TOKEN }} .
+        run: docker build --no-cache --pull -f ./build/helper.ci.Dockerfile -t $HELPER_TAG --build-arg CI_JOB_TOKEN=${{ secrets.TOKEN }} .
   # lint:
   #   needs: prebuild
   # unit:
