@@ -12,10 +12,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: '0'
-
     - name: build helper image
       run: docker build --no-cache --pull -f ./build/helper.ci.Dockerfile -t ${{ inputs.docker_repository }}/${{ inputs.app_name }}-helper:${{ inputs.version }} --build-arg CI_JOB_TOKEN=${{ inputs.token }} .
       shell: bash
