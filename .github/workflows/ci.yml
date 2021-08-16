@@ -36,17 +36,17 @@ jobs:
       with:
         docker_repository: $DOCKER_REPOSITORY
         app_name: $APP_NAME
-        version: $GITHUB_SHA
+        version: ${{ github.sha }}
         token: ${{ secrets.TOKEN }}
       
     - name: run tests
       env:
         VERSION: $GITHUB_SHA
-      run: docker image ls
+      run: make test-ci
 
     - name: cleanup
       if: always()
       env:
-        VERSION: $GITHUB_SHA
+        VERSION: ${{ github.sha }}
       run: make stop
         
