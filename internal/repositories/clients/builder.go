@@ -9,14 +9,14 @@ import (
 const tableClients = "clients"
 
 func prepareInsertOrUpdateClientQuery(model clientModel) (string, []interface{}, error) {
-	psqlSq := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
+	builder := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 
 	st, err := stommer.New(model)
 	if err != nil {
 		return "", []interface{}{}, err
 	}
 
-	rawRequest := psqlSq.Insert(tableClients).
+	rawRequest := builder.Insert(tableClients).
 		Columns(st.Columns...).
 		Values(st.Values...).
 		Suffix(`
@@ -31,14 +31,14 @@ func prepareInsertOrUpdateClientQuery(model clientModel) (string, []interface{},
 }
 
 func prepareFindClientByEmailQuery(email string) (string, []interface{}, error) {
-	psqlSq := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
+	builder := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 
 	st, err := stommer.New(clientModel{})
 	if err != nil {
 		return "", []interface{}{}, err
 	}
 
-	rawRequest := psqlSq.Select(st.Columns...).
+	rawRequest := builder.Select(st.Columns...).
 		From(tableClients).
 		Where(sq.Eq{
 			"email":      email,

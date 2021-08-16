@@ -1,0 +1,26 @@
+run:
+  timeout: 3m
+  tests: true
+
+linters-settings:
+  goimports:
+    local-prefixes: git.tribuna.com/betting-insider/bets
+
+linters:
+  enable:
+    - deadcode
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - structcheck
+    - typecheck
+    - unused
+    - varcheck
+    - bodyclose
+    - depguard
+    - goimports
+    - dupl
+  enable-all: false
+  disable-all: true

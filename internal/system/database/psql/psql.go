@@ -3,6 +3,8 @@ package psql
 import (
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+
+	"rebrainme/gotest/internal/config"
 )
 
 const dialect = "postgres"
@@ -15,7 +17,7 @@ type client struct {
 	conn *sqlx.DB
 }
 
-func New(cfg *Config) (Client, error) {
+func New(cfg *config.PSQL) (Client, error) {
 	db, err := sqlx.Open(dialect, cfg.DSN)
 	if err != nil {
 		return nil, err

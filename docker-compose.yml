@@ -1,0 +1,32 @@
+version: "3"
+
+volumes:
+  postgres:
+
+services:
+  postgres:
+    image: postgres:13
+    tty: true
+    restart: on-failure
+    healthcheck:
+      test: pg_isready -U payments -d payments
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    environment:
+      POSTGRES_USER: gotest
+      POSTGRES_PASSWORD: gotest
+      POSTGRES_DB: gotest
+    volumes:
+      - postgres:/var/lib/postgresql/data
+
+  helper:
+    image: ${DOCKER_REPOSITORY}/${APP_NAME}-helper:${VERSION}
+    container_name: helper-${VERSION:-develop}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - ./config/env.dev
+    volumes:
+      - ./:/app

@@ -1,0 +1,22 @@
+name: ci
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  prebuild:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: checkout code from master
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: '0'
+      - name: build helper image
+        run: make build
+  # lint:
+  #   needs: prebuild
+  # unit:
+  #   needs: prebuild
+  # system:
+  #   needs: unit

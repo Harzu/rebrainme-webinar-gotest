@@ -5,24 +5,28 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/vrischmann/envconfig"
 
+	"rebrainme/gotest/internal/config"
 	"rebrainme/gotest/internal/system/database/psql"
 )
 
 const skipTestMessage = "Skip test. please up local database for this test"
 
-func getTestRepoAndClient(req *require.Assertions) (Repository, *sqlx.DB) {
-	type config struct {
-		PSQL *psql.Config
+func getTestRepoAndClient(req *require.Assertions) (*repositoryDB, *sqlx.DB) {
+	type testConfig struct {
+		PSQL *config.PSQL
 	}
 
-	var cfg config
+	var cfg testConfig
 	err := envconfig.Init(&cfg)
 	req.NoError(err)
 
 	postgresClient, err := psql.New(cfg.PSQL)
 	req.NoError(err)
 
-	repo := NewRepository(postgresClient)
+	var (
+		postgresConn = postgresClient.GetConnection()
+		repository   = repositoryDB{conn: postgresConn}
+	)
 
-	return repo, postgresClient.GetConnection()
+	return &repository, postgresConn
 }

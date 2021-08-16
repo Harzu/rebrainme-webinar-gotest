@@ -1,37 +1,61 @@
-.PHONY: generate mock-gen build run-test-env migration-up migration-down run-long-tests stop-env
+SHELL := bash
+.ONESHELL:
+MAKEFLAGS += --no-builtin-rules
 
 export APP_NAME := gotest
 export VERSION := $(if $(TAG),$(TAG),$(if $(BRANCH_NAME),$(BRANCH_NAME),$(shell git symbolic-ref -q --short HEAD || git describe --tags --exact-match)))
 export DOCKER_REPOSITORY := rebrainme-webinars
 export DOCKER_BUILDKIT := 1
 
-MIGRATE_DSN := "postgres://gotest:gotest@psql:5432/gotest?sslmode=disable"
+MIGRATE_DSN := "postgres://gotest:gotest@postgres:5432/gotest?sslmode=disable"
 NOCACHE := $(if $(NOCACHE),"--no-cache")
 
-generate: mock-gen
+.PHONY: help
+help: ## List all available targets with help
+	@grep -E '^[0-9a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
-mock-gen:
-	@rm -rf ./test/mocks/packages
+.PHONY: init
+init: ## Init project
+	@git config core.hooksPath .githooks
+	@go mod tidy && make generate
+
+.PHONY: generate
+generate: ## Golang codegen
 	@go generate ./...
 
-build:
+.PHONY: lint
+lint: ## Run golangci-lint
+	golangci-lint run
+
+.PHONY: build
+build: ## Build docker containers
 	@docker build ${NOCACHE} --pull -f ./build/helper.Dockerfile -t ${DOCKER_REPOSITORY}/${APP_NAME}-helper:${VERSION} --ssh default .
 
-run-test-env:
-	@docker-compose -f ./build/docker-compose.yml up -d psql
-	@sleep 5
+.PHONY: run-dev-env
+run-dev-env:
+	@docker-compose up -d postgres
 
-migration-up:
-	@docker-compose -f ./build/docker-compose.yml run --rm -T helper migrate -verbose -path ./migrations -database ${MIGRATE_DSN} up
+.PHONY: migration-up
+migration-up: ## Run develop migrations
+	@docker-compose run --rm -T helper migrate -verbose -path ./migrations -database ${MIGRATE_DSN} up
 
-migration-down:
-	@docker-compose -f ./build/docker-compose.yml run --rm -T helper migrate -verbose -path ./migrations -database ${MIGRATE_DSN} down
+.PHONY: migration-down
+migration-down: ## Rollback develop migrations
+	@docker-compose run --rm helper migrate -verbose -path ./migrations -database ${MIGRATE_DSN} down
 
-tests-short:
+.PHONY: test-short
+test-short: ## Run only unit tests
 	@go test -short -cover ./...
 
-tests-long: run-test-env migration-up
-	@docker-compose -f ./build/docker-compose.yml run --rm -T helper sh ./scripts/long_tests_runner.sh; $(MAKE) stop-env
+.PHONY: test-long
+test-long: run-dev-env ## Run all tests (unit/integrations)
+	@make run-dev-env && make migration-up && make test-long-up; make stop
 
-stop-env:
-	@docker-compose -f ./build/docker-compose.yml down
+.PHONY: tests-long-up
+test-long-up:
+	@docker-compose run --rm helper sh ./scripts/long_tests_runner.sh; $(MAKE) stop-env
+
+.PHONY: stop
+stop: ## Stop dev environment
+	@docker-compose down -v

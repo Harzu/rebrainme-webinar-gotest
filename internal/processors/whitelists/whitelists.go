@@ -3,6 +3,7 @@ package whitelists
 import (
 	"context"
 
+	"rebrainme/gotest/internal/config"
 	"rebrainme/gotest/internal/repositories"
 )
 
@@ -14,7 +15,7 @@ type whitelistsProcessor struct {
 	cityWhitelistValidator Validator
 }
 
-func New(cfg *Config, repoContainer repositories.Container) Validator {
+func New(cfg *config.WhitelistProcessor, repoContainer repositories.Container) Validator {
 	return &whitelistsProcessor{
 		cityWhitelistValidator: newCityWhitelistValidator(repoContainer.Clients, cfg.CitiesValidator.GrantedCities),
 	}
