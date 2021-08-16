@@ -18,7 +18,7 @@ jobs:
         fetch-depth: '0'
 
     - name: lint
-      uses: ./.github/workflows/helper
+      uses: ./.github/actions/helper
       with:
         docker_repository: $DOCKER_REPOSITORY
         app_name: $APP_NAME
