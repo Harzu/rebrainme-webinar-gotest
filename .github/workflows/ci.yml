@@ -4,6 +4,10 @@ on:
   workflow_dispatch:
   push:
 
+env:
+  DOCKER_REPOSITORY: Harzu
+  APP_NAME: gotest
+
 jobs:
   prebuild:
     runs-on: "ubuntu-latest"
@@ -12,8 +16,9 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: '0'
+
       - name: build helper image
-        run: make build
+        run: docker build --no-cache --pull -f ./build/helper.ci.Dockerfile -t $DOCKER_REPOSITORY/$APP_NAME-helper:$GITHUB_SHA --build-arg CI_JOB_TOKEN=${{ secrets.TOKEN }} .
   # lint:
   #   needs: prebuild
   # unit:
