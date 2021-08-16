@@ -19,9 +19,12 @@ jobs:
 
     - name: lint
       uses: ./.github/actions/helper
+      env:
+        VERSION: $GITHUB_SHA
       with:
         docker_repository: $DOCKER_REPOSITORY
         app_name: $APP_NAME
-        version: $GITHUB_SHA
+        version: $VERSION
         token: ${{ secrets.TOKEN }}
+      run: make lint
         
