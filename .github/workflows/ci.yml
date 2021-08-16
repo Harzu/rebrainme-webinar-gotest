@@ -42,7 +42,7 @@ jobs:
     - name: run tests
       env:
         VERSION: $GITHUB_SHA
-      run: make test-ci
+      run: docker image ls
 
     - name: cleanup
       if: always()
