@@ -18,3 +18,4 @@ runs:
 
     - name: build helper image
       run: docker build --no-cache --pull -f ./build/helper.ci.Dockerfile -t ${{ inputs.docker_repository }}/${{ inputs.app_name }}-helper:${{ inputs.version }} --build-arg CI_JOB_TOKEN=${{ inputs.token }} .
+      shell: bash
