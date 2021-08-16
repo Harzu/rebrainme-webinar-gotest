@@ -59,7 +59,7 @@ test-ci:
 
 .PHONY: tests-long-up
 test-long-up:
-	@docker-compose run --rm helper sh ./scripts/long_tests_runner.sh; $(MAKE) stop-env
+	@docker-compose run --rm helper sh ./scripts/long_tests_runner.sh
 
 .PHONY: stop
 stop: ## Stop dev environment
