@@ -9,7 +9,7 @@ env:
   APP_NAME: gotest
 
 jobs:
-  prebuild:
+  lint:
     runs-on: "ubuntu-latest"
     steps:
     - name: checkout code from master
@@ -17,14 +17,16 @@ jobs:
       with:
         fetch-depth: '0'
 
-    - name: lint
+    - name: build helper
       uses: ./.github/actions/helper
-      env:
-        VERSION: $GITHUB_SHA
       with:
         docker_repository: $DOCKER_REPOSITORY
         app_name: $APP_NAME
-        version: $VERSION
+        version: $GITHUB_SHA
         token: ${{ secrets.TOKEN }}
+      
+    - name: run golangci-lint
+      env:
+        VERSION: $GITHUB_SHA
       run: make lint
         
