@@ -41,7 +41,7 @@ jobs:
       
     - name: run tests
       env:
-        VERSION: $GITHUB_SHA
+        VERSION: ${{ github.sha }}
       run: make test-ci
 
     - name: cleanup
