@@ -12,21 +12,30 @@ jobs:
   lint:
     runs-on: "ubuntu-latest"
     steps:
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.38
+
+  system_test:
+    runs-on: "ubuntu-latest"
+    needs: lint
+    steps:
     - name: checkout code from master
       uses: actions/checkout@v2
       with:
         fetch-depth: '0'
 
     - name: build helper
-      uses: ./.github/actions/helper
+      uses: .github/actions/helper
       with:
         docker_repository: $DOCKER_REPOSITORY
         app_name: $APP_NAME
         version: $GITHUB_SHA
         token: ${{ secrets.TOKEN }}
       
-    - name: run golangci-lint
+    - name: run tests
       env:
         VERSION: $GITHUB_SHA
-      run: make lint-from-docker
+      run: make test-long
         

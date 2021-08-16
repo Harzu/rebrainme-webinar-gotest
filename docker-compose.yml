@@ -22,7 +22,6 @@ services:
 
   helper:
     image: ${DOCKER_REPOSITORY}/${APP_NAME}-helper:${VERSION}
-    container_name: helper-${VERSION:-develop}
     depends_on:
       postgres:
         condition: service_healthy
