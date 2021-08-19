@@ -1,14 +1,17 @@
 package utils
 
-func ReverseInt(n int) (res int) {
-	for n != 0 {
-		res = res*10 + n%10
-		if res > 2147483647 || res < -2147483648 {
+func reverseInt(num int) int {
+	var result, prevResult int
+	for num != 0 {
+		digit := num % 10
+		result = result*10 + digit
+
+		if (result-digit)/10 != prevResult {
 			return 0
 		}
 
-		n /= 10
+		prevResult = result
+		num /= 10
 	}
-
-	return
+	return result
 }

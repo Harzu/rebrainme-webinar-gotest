@@ -7,23 +7,22 @@ import (
 )
 
 func TestReverseInt(t *testing.T) {
-	actual := ReverseInt(123)
+	actual := reverseInt(123)
 	if actual != 321 {
 		t.Errorf("expected: 321, actual: %d", actual)
 	}
 
-	actual = ReverseInt(0)
+	actual = reverseInt(0)
 	if actual != 0 {
 		t.Errorf("expected: 0, actual: %d", actual)
 	}
 
-	actual = ReverseInt(444)
+	actual = reverseInt(444)
 	if actual != 444 {
 		t.Errorf("expected: 444, actual: %d", actual)
 	}
 
-	const maxInt32 = 2147483647
-	actual = ReverseInt(maxInt32 + 1)
+	actual = reverseInt(9223372036854775199)
 	if actual != 0 {
 		t.Errorf("expected: 0, actual: %d", actual)
 	}
@@ -34,7 +33,7 @@ func TestReverseInt(t *testing.T) {
 // то t.Fatal завершает выполнение тестовой функции. Для того чтобы проверить это замените
 // в каждой проверке 321 на 3211 и запустите тест. Сообщение, которое вы должны увидеть в консоли - "case 2"
 func TestInvalidReverseInt(t *testing.T) {
-	actual := ReverseInt(123)
+	actual := reverseInt(123)
 	if actual != 321 {
 		t.Fail()
 	}
@@ -49,10 +48,9 @@ func TestInvalidReverseInt(t *testing.T) {
 }
 
 func TestReverseIntV2(t *testing.T) {
-	const maxInt32 = 2147483647
 	req := require.New(t)
-	req.Equal(321, ReverseInt(123))
-	req.Equal(0, ReverseInt(0))
-	req.Equal(444, ReverseInt(444))
-	req.Equal(0, ReverseInt(maxInt32+1))
+	req.Equal(321, reverseInt(123))
+	req.Equal(0, reverseInt(0))
+	req.Equal(444, reverseInt(444))
+	req.Equal(0, reverseInt(9223372036854775199))
 }
