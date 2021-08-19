@@ -7,6 +7,7 @@ export DOCKER_REPOSITORY := $(if $(DOCKER_REPOSITORY),$(DOCKER_REPOSITORY),rebra
 export VERSION := $(if $(VERSION),$(VERSION),$(if $(COMMIT_SHA),$(COMMIT_SHA),$(shell git rev-parse --verify HEAD)))
 export DOCKER_BUILDKIT := 1
 
+CURRENT_GIT_BRANCH := $(shell git branch --show-current)
 MIGRATE_DSN := "postgres://gotest:gotest@postgres:5432/gotest?sslmode=disable"
 NOCACHE := $(if $(NOCACHE),"--no-cache")
 
@@ -64,3 +65,8 @@ test-long-up:
 .PHONY: stop
 stop: ## Stop dev environment
 	@docker-compose down -v
+
+.PHONY: push-repo
+push-repo:
+	@git push origin $(CURRENT_GIT_BRANCH)
+	@git push gitlab $(CURRENT_GIT_BRANCH)

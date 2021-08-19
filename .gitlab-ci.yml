@@ -7,7 +7,7 @@ stages:
     GOPATH: "$CI_PROJECT_DIR/.go"
     GOPRIVATE: "github.com/Harzu/"
     GO111MODULE: "on"
-    CGO_ENABLED: "0"
+    CGO_ENABLED: "1"
   before_script:
     - git config --global url."https://Harzu:${GITHUB_TOKEN}@github.com".insteadOf "https://github.com"
     - go mod tidy
@@ -18,7 +18,7 @@ lint:
   image: golangci/golangci-lint:v1.39-alpine
   when: always
   script:
-    - make lint
+    - golangci-lint run --issues-exit-code 1 --out-format colored-line-number --color always
 
 system:
   image: docker/compose:1.28.5

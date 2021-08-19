@@ -4,7 +4,7 @@ ARG CI_JOB_TOKEN
 
 ENV GOPRIVATE "github.com/Harzu/*"
 ENV GO111MODULE "on"
-ENV CGO_ENABLED "0"
+ENV CGO_ENABLED "1"
 
 RUN set -e \
     && mkdir -p .go/bin \
