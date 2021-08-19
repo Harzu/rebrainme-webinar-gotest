@@ -1,4 +1,4 @@
-## Repo for golang test webinar
+## Repository for golang test webinar
 
 use `make help` for info about run
 
