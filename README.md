@@ -1,4 +1,4 @@
-## Repository for golang test webinar
+## Repository for rebrainme webinar | golang tests
 
 use `make help` for info about run
 
