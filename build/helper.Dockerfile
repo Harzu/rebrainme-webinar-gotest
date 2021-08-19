@@ -9,7 +9,7 @@ RUN apt-get install openssh-client git
 
 RUN mkdir -p -m 0600 ~/.ssh \
     && ssh-keyscan git.myrepo.com >> ~/.ssh/known_hosts \
-    && git config --global url."ssh://git@github.com/Harzu/".insteadOf "https://github.com/Harzu/" \
+    && git configs --global url."ssh://git@github.com/Harzu/".insteadOf "https://github.com/Harzu/" \
     && curl -L https://github.com/golang-migrate/migrate/releases/download/v4.14.1/migrate.linux-amd64.tar.gz | tar -xvz \
     && mv ./migrate.linux-amd64 /bin/migrate \
     && wget -O- -nv https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.38.0 \

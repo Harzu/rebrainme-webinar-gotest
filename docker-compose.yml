@@ -26,6 +26,6 @@ services:
       postgres:
         condition: service_healthy
     env_file:
-      - ./config/env.dev
+      - configs/env.dev
     volumes:
       - ./:/app
