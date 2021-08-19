@@ -9,7 +9,7 @@ stages:
     GO111MODULE: "on"
     CGO_ENABLED: "1"
   before_script:
-    - git configs --global url."https://Harzu:${GITHUB_TOKEN}@github.com".insteadOf "https://github.com"
+    - git config --global url."https://Harzu:${GITHUB_TOKEN}@github.com".insteadOf "https://github.com"
     - go mod tidy
 
 lint:
