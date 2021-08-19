@@ -1,0 +1,41 @@
+stages:
+  - integration
+
+.golang:
+  image: golang:1.16
+  variables:
+    GOPATH: "$CI_PROJECT_DIR/.go"
+    GOPRIVATE: "github.com/Harzu/"
+    GO111MODULE: "on"
+    CGO_ENABLED: "0"
+  before_script:
+    - git config --global url."https://Harzu:${GITHUB_TOKEN}@github.com".insteadOf "https://github.com"
+    - go mod tidy
+
+lint:
+  extends: .golang
+  stage: integration
+  image: golangci/golangci-lint:v1.39-alpine
+  when: always
+  script:
+    - golangci-lint run --issues-exit-code 1 --out-format colored-line-number --color always
+
+system:
+  image: docker/compose:1.28.5
+  services:
+    - name: docker:19-dind
+      command: [ "--mtu=1400" ]
+  when: always
+  stage: integration
+  variables:
+    MIGRATE_DSN: "postgres://gotest:gotest@postgres:5432/gotest?sslmode=disable"
+    DOCKER_REPOSITORY: "rebrainme-webinars"
+    APP_NAME: "gotest"
+    VERSION: $CI_COMMIT_SHA
+  before_script:
+    - docker build --no-cache -f ./build/helper.ci.Dockerfile -t ${DOCKER_REPOSITORY}/${APP_NAME}-helper:${VERSION} --build-arg CI_JOB_TOKEN=$GITHUB_TOKEN .
+    - docker-compose up -d postgres
+    - docker-compose run --rm helper migrate -verbose -path ./migrations -database ${MIGRATE_DSN} up
+  script: docker-compose run --rm helper /bin/bash ./scripts/long_test_runner.sh
+  after_script:
+    - docker-compose down -v
