@@ -18,7 +18,7 @@ lint:
   image: golangci/golangci-lint:v1.39-alpine
   when: always
   script:
-    - golangci-lint run --issues-exit-code 1 --out-format colored-line-number --color always
+    - make lint
 
 system:
   image: docker/compose:1.28.5
