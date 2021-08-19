@@ -67,6 +67,6 @@ stop: ## Stop dev environment
 	@docker-compose down -v
 
 .PHONY: push-repo
-push-repo:
+push-repo: ## Push to all remote repo (github/gitlab)
 	@git push origin $(CURRENT_GIT_BRANCH)
 	@git push gitlab $(CURRENT_GIT_BRANCH)

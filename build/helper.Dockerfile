@@ -2,8 +2,9 @@
 
 FROM golang:1.16
 
-ENV GOPRIVATE github.com/Harzu/*
-ENV GO111MODULE on
+ENV GOPRIVATE "github.com/Harzu/*"
+ENV GO111MODULE "on"
+ENV CGO_ENABLED "1"
 
 RUN apt-get install openssh-client git
 
